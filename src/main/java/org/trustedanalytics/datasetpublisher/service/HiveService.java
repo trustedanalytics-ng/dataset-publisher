@@ -70,9 +70,9 @@ public class HiveService {
 
   private void execute(String sql, JwtToken userIdentity) {
     LOGGER.info("Execute: {}", sql);
-    try (Connection connection = hiveClient.getConnection(userIdentity)) {
-      Statement stm = connection.createStatement();
-      stm.executeUpdate(sql);
+    try (Connection connection = hiveClient.getConnection(userIdentity);
+         Statement stm = connection.createStatement()) {
+        stm.executeUpdate(sql);
     } catch (InterruptedException |
         IOException |
         LoginException |
