@@ -242,6 +242,38 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+              <groupId>com.spotify</groupId>
+              <artifactId>docker-maven-plugin</artifactId>
+              <configuration>
+                <imageName>${docker.imageName}</imageName>
+                <baseImage>${docker.registry}/tap-base-java:java8-jessie</baseImage>
+                <cmd>["/scripts/run.sh", "/${project.build.finalName}.jar"]</cmd>
+                <resources>
+                   <resource>
+                     <targetPath>/</targetPath>
+                     <directory>${project.build.directory}</directory>
+                     <include>${project.build.finalName}.jar</include>
+                   </resource>
+                   <resource>
+                     <targetPath>/scripts</targetPath>
+                     <directory>${project.basedir}/scripts</directory>
+                   </resource>
+                </resources>
+                <env>
+                  <PORT>80</PORT>
+                  <JAVA_OPTS>-Xmx500m</JAVA_OPTS>
+                </env>
+                <runs>
+                  <run>apt-get update</run>
+                  <run>apt-get -y install gettext-base</run>
+                  <run>apt-get clean autoclean</run>
+                  <run>apt-get autoremove -y</run>
+                  <run>chmod 744 /scripts/*.sh</run>
+                </runs>
+                <squashRunCommands>true</squashRunCommands>
+              </configuration>
+            </plugin>
         </plugins>
     </build>
 
@@ -252,6 +284,8 @@
         <jacoco-measurement-branches>0.700</jacoco-measurement-branches>
         <jacoco-measurement-lines>0.690</jacoco-measurement-lines>
         <jacoco-measurement-classes>0.720</jacoco-measurement-classes>
+        <docker.imageName>${project.artifactId}</docker.imageName>
+        <docker.registry>tapimages.us.enableiot.com:8080</docker.registry>
     </properties>
 
 </project>

@@ -1,10 +1,10 @@
 hue:
-  url: ${vcap.services.external-tools.credentials.hue.url}
-  available: ${vcap.services.external-tools.credentials.hue.available}
+  url: ${tools.hue.uri}
+  available: ${tools.hue.available}
 
 arcadia:
-  url: ${vcap.services.external-tools.credentials.arcadia.url}
-  available: ${vcap.services.external-tools.credentials.arcadia.available}
+  url: ${tools.arcadia.uri}
+  available: ${tools.arcadia.available}
 
 cf:
   resource: ${vcap.services.sso.credentials.apiEndpoint}

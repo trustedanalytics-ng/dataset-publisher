@@ -1,0 +1,32 @@
+{
+  "hive": [
+   {
+    "credentials": {
+     "connectionUrl": "$HIVE_URI"
+    },
+    "label": "hive",
+    "name": "hive-for-dspublisher",
+    "plan": "multitenant",
+    "tags": []
+   }
+  ],
+  "kerberos": [
+   {
+    "credentials": {
+     "config": "",
+     "enabled": false,
+     "kcacert": "",
+     "kdc": " ",
+     "kpassword": " ",
+     "krealm": " ",
+     "kuser": "cf"
+    },
+    "label": "kerberos",
+    "name": "kerberos-instance",
+    "plan": "shared",
+    "tags": [
+     "kerberos"
+    ]
+   }
+  ]
+}
