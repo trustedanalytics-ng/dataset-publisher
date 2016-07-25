@@ -15,11 +15,13 @@
  */
 package org.trustedanalytics.datasetpublisher.service;
 
+import org.apache.hadoop.security.AccessControlException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.trustedanalytics.datasetpublisher.entity.HiveTable;
@@ -27,6 +29,7 @@ import org.trustedanalytics.hadoop.config.client.helper.Hive;
 import org.trustedanalytics.hadoop.config.client.oauth.JwtToken;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collections;
 
@@ -102,6 +105,24 @@ public class HiveServiceTest {
 
     //then
     //any Exception in executing query propagates as RuntimeException
+  }
+
+  @Test(expected = AccessDeniedException.class)
+  public void testCreateTable_accessControlException_propagatesAsAccessDeniedException() throws Exception {
+    //given
+    final HiveTable hiveTable = new HiveTable("db", "table", Collections.emptyList(), "loc");
+    Connection connection = mock(Connection.class);
+    Statement stm = mock(Statement.class);
+    SQLException exception = new SQLException("Test" + AccessControlException.class.getName() + "exception");
+    when(connection.createStatement()).thenReturn(stm);
+    when(hiveClient.getConnection(userIdentity)).thenReturn(connection);
+    when(stm.executeUpdate(anyObject())).thenThrow(exception);
+
+    //when
+    hiveService.createTable(hiveTable, userIdentity);
+
+    //then
+    //AccessControlException propagates as AccessDeniedException
   }
 
   @Configuration

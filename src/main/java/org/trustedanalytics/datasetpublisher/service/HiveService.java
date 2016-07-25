@@ -17,9 +17,11 @@ package org.trustedanalytics.datasetpublisher.service;
 
 import com.google.common.base.Throwables;
 
+import org.apache.hadoop.security.AccessControlException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.trustedanalytics.datasetpublisher.entity.HiveTable;
 import org.trustedanalytics.hadoop.config.client.helper.Hive;
@@ -78,8 +80,12 @@ public class HiveService {
         LoginException |
         SQLException |
         URISyntaxException e) {
-      LOGGER.error(String.format("Can't execute query %s", sql), e);
-      throw Throwables.propagate(e);
+        LOGGER.error(String.format("Can't execute query %s", sql), e);
+        /* AccessControlException is serialized within SQLException message from server as a String */
+        if(e instanceof SQLException && e.getMessage().contains(AccessControlException.class.getName())) {
+            throw new AccessDeniedException("Permission denied.", e);
+        }
+        Throwables.propagate(e);
     }
   }
 }
