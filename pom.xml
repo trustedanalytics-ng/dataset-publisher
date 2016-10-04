@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>dataset-publisher</artifactId>
-    <version>0.5.3</version>
+    <version>0.6.0</version>
 
     <parent>
         <groupId>org.trustedanalytics</groupId>
@@ -245,6 +245,7 @@
             <plugin>
               <groupId>com.spotify</groupId>
               <artifactId>docker-maven-plugin</artifactId>
+              <version>0.4.12</version>
               <configuration>
                 <imageName>${docker.imageName}</imageName>
                 <baseImage>${docker.registry}/tap-base-java:java8-jessie</baseImage>
@@ -265,13 +266,10 @@
                   <JAVA_OPTS>-Xmx500m</JAVA_OPTS>
                 </env>
                 <runs>
-                  <run>apt-get update</run>
-                  <run>apt-get -y install gettext-base</run>
-                  <run>apt-get clean autoclean</run>
-                  <run>apt-get autoremove -y</run>
                   <run>chmod 744 /scripts/*.sh</run>
                 </runs>
                 <squashRunCommands>true</squashRunCommands>
+                <useConfigFile>true</useConfigFile>
               </configuration>
             </plugin>
         </plugins>

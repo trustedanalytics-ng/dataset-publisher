@@ -24,4 +24,6 @@ fi
 SCRIPT_DIR=$(dirname $(readlink -f ${BASH_SOURCE[0]}))
 
 # Render VCAP_SERVICES template
-cat $SCRIPT_DIR/vcap_template.json | envsubst
+eval "cat <<EOF
+$(<$SCRIPT_DIR/vcap_template.json)
+EOF"
