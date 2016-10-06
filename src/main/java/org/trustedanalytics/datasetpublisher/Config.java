@@ -15,12 +15,22 @@
  */
 package org.trustedanalytics.datasetpublisher;
 
-import com.google.common.collect.ImmutableSet;
+import static org.springframework.web.context.WebApplicationContext.SCOPE_REQUEST;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Supplier;
+
+import org.apache.hadoop.fs.Path;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.security.core.Authentication;
@@ -28,23 +38,65 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.trustedanalytics.cloud.auth.AuthTokenRetriever;
 import org.trustedanalytics.cloud.auth.OAuth2TokenRetriever;
 import org.trustedanalytics.datasetpublisher.boundary.ExternalTool;
+import org.trustedanalytics.hadoop.config.client.AppConfiguration;
+import org.trustedanalytics.hadoop.config.client.Property;
+import org.trustedanalytics.hadoop.config.client.ServiceInstanceConfiguration;
+import org.trustedanalytics.hadoop.config.client.ServiceType;
+import org.trustedanalytics.hadoop.config.client.SimpleAppConfiguration;
+import org.trustedanalytics.hadoop.config.client.SimpleInstanceConfiguration;
 import org.trustedanalytics.hadoop.config.client.helper.Hive;
 import org.trustedanalytics.hadoop.config.client.oauth.JwtToken;
 import org.trustedanalytics.hadoop.config.client.oauth.TapOauthToken;
 
-import java.io.IOException;
-import java.util.Set;
-import java.util.function.Supplier;
-
-import static org.springframework.web.context.WebApplicationContext.SCOPE_REQUEST;
+import com.google.common.collect.ImmutableSet;
 
 @Configuration
 @EnableConfigurationProperties({Config.Hue.class, Config.Arcadia.class})
 public class Config {
 
+  @Value("${hive.uri}")
+  private String hiveUri;
+  
+  @Value("${hadoop.conf.dir}")
+  private String hadoopConfDir;
+  
+  @Value("${krb.kdc}")
+  private String krbKdc;
+  
+  @Value("${krb.realm}")
+  private String krbRealm;
+  
+  @Profile("cloud")
   @Bean
   public Hive hiveClient() throws IOException {
     return Hive.newInstance();
+  }
+
+  @Profile("kubernetes")
+  @Bean
+  public Hive hiveClientK8s() throws IOException {
+      return Hive.newInstance(appConfig());
+  }
+
+  @Bean
+  public AppConfiguration appConfig() throws IOException {
+    Map<Property, String> properties = new HashMap<>();
+    properties.put(Property.KRB_KDC, krbKdc);
+    properties.put(Property.KRB_REALM, krbRealm);
+    properties.put(Property.HIVE_URL, hiveUri);
+    
+    SimpleInstanceConfiguration configuration = new SimpleInstanceConfiguration("config", getHadoopConfiguration(hadoopConfDir), properties);
+
+    HashMap<ServiceType, ServiceInstanceConfiguration> svcMap = new HashMap<>();
+    svcMap.put(ServiceType.HIVE_TYPE, configuration);
+    svcMap.put(ServiceType.KERBEROS_TYPE, configuration);
+    
+    return new SimpleAppConfiguration(svcMap);
+  }
+  
+  private static org.apache.hadoop.conf.Configuration getHadoopConfiguration(String confDir) throws IOException {
+    return Arrays.asList("core-site.xml", "hdfs-site.xml").stream()
+      .collect(org.apache.hadoop.conf.Configuration::new, (c, f) -> c.addResource(new Path(confDir + f)), (c, d) -> {});
   }
 
   @Bean

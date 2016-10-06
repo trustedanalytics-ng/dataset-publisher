@@ -7,7 +7,7 @@ arcadia:
   available: ${tools.arcadia.available}
 
 cf:
-  resource: ${vcap.services.sso.credentials.apiEndpoint}
+  resource: ${sso.apiEndpoint}
   uaa: ${vcap.services.sso.credentials.uaaUri}
 
 security:
@@ -17,7 +17,7 @@ spring.oauth2:
   resource:
     id: cloud_controller
     jwt:
-      keyUri: ${vcap.services.sso.credentials.tokenKey}
+      keyUri: ${sso.tokenKey}
 
 logging:
   level:
