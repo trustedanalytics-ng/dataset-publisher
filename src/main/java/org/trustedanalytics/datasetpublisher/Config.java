@@ -87,7 +87,7 @@ public class Config {
     
     SimpleInstanceConfiguration configuration = new SimpleInstanceConfiguration("config", getHadoopConfiguration(hadoopConfDir), properties);
 
-    HashMap<ServiceType, ServiceInstanceConfiguration> svcMap = new HashMap<>();
+    Map<ServiceType, ServiceInstanceConfiguration> svcMap = new HashMap<>();
     svcMap.put(ServiceType.HIVE_TYPE, configuration);
     svcMap.put(ServiceType.KERBEROS_TYPE, configuration);
     
