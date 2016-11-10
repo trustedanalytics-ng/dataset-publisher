@@ -96,7 +96,7 @@ public class Config {
   
   private static org.apache.hadoop.conf.Configuration getHadoopConfiguration(String confDir) throws IOException {
     return Arrays.asList("core-site.xml", "hdfs-site.xml").stream()
-      .collect(org.apache.hadoop.conf.Configuration::new, (c, f) -> c.addResource(new Path(confDir + f)), (c, d) -> {});
+      .collect(org.apache.hadoop.conf.Configuration::new, (c, f) -> c.addResource(new Path(confDir, f)), (c, d) -> {});
   }
 
   @Bean
