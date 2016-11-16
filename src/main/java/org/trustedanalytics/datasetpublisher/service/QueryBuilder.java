@@ -24,10 +24,6 @@ import java.util.stream.Collectors;
 @Service
 public class QueryBuilder {
 
-    public String createDatabase(HiveTable table) {
-        return String.format("create database if not exists %s", table.databaseName);
-    }
-
     public String createTable(HiveTable table) {
         return String.format("create external table if not exists %s (" +
                 table.fields.stream().map(column -> column + " string")

@@ -36,18 +36,6 @@ public class QueryBuilderTest {
     private final HiveTable table = new HiveTable(databaseName, tableName, columns, location);
 
     @Test
-    public void testCreateDatabaseQuery() throws SQLException {
-        // given
-        final QueryBuilder builder = new QueryBuilder();
-
-        // when
-        final String sql = builder.createDatabase(table);
-
-        // then
-        assertThat(sql, is("create database if not exists " + databaseName));
-    }
-
-    @Test
     public void testDropTableQuery() throws SQLException {
         // given
         final QueryBuilder builder = new QueryBuilder();

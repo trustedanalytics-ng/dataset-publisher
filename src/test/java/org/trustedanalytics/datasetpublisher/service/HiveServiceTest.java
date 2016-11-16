@@ -131,7 +131,6 @@ public class HiveServiceTest {
     @Bean
     public QueryBuilder queryBuilder() {
       QueryBuilder builder = mock(QueryBuilder.class);
-      when(builder.createDatabase(any())).thenReturn("sql");
       when(builder.createTable(any())).thenReturn("sql");
       when(builder.dropTable(any())).thenReturn("sql");
       return builder;
