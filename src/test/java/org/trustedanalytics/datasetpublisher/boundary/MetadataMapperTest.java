@@ -31,7 +31,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.trustedanalytics.datasetpublisher.entity.HiveTable;
 
 import java.util.Set;
-import java.util.UUID;
 import java.util.function.Function;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -44,7 +43,7 @@ import static org.hamcrest.Matchers.is;
 public class MetadataMapperTest {
 
     @Autowired
-    private UUID orgUUID;
+    private String orgId;
 
     @Autowired
     private String dbName;
@@ -59,7 +58,7 @@ public class MetadataMapperTest {
     public void testMapValidMetadata() {
         // given
         final Metadata metadata = new Metadata();
-        metadata.setOrgUUID(orgUUID.toString());
+        metadata.setOrgUUID(orgId);
         metadata.setTitle("Qatar: GDP (constant LCU)");
         metadata.setDataSample("Complaint ID,Product,Location,Date,Date received,Timely response?");
         metadata.setTargetUri("hdfs://10.10.123.123/cf/broker/instances/9614e6a4/3460a1d320b2/000000_1");
@@ -79,7 +78,7 @@ public class MetadataMapperTest {
     public void testMapInvalidMetadata() {
         // given
         final Metadata metadata = new Metadata();
-        metadata.setOrgUUID(orgUUID.toString());
+        metadata.setOrgUUID(orgId);
         metadata.setTitle("1900: CHINA ITS");
         metadata.setDataSample(":One,*Two two,3Three,Four_");
         metadata.setTargetUri("hdfs://10.10.123.123/cf/broker/instances/12/34/000000_1");
@@ -99,7 +98,7 @@ public class MetadataMapperTest {
     public void testValidateDuplicatedFields(){
         // given
         final Metadata metadata = new Metadata();
-        metadata.setOrgUUID(orgUUID.toString());
+        metadata.setOrgUUID(orgId);
         metadata.setTitle("Qatar: GDP (constant LCU)");
         metadata.setDataSample(
             "A11,6,A34,A43,1169,A65,A75,4,A93,A101,4,A121,67,A143,A152,2,A173,1,A192,A201,1,A11,A192");
@@ -121,7 +120,7 @@ public class MetadataMapperTest {
     public void testValidateDuplicatedColumns(){
         // given
         final Metadata metadata = new Metadata();
-        metadata.setOrgUUID(orgUUID.toString());
+        metadata.setOrgUUID(orgId);
         metadata.setTitle("Qatar: GDP (constant LCU)");
         metadata.setDataSample("one,two, sth,#sth,_4,x$4,run ,run#");
         metadata.setTargetUri("hdfs://10.10.123.123/cf/broker/instances/9614e6a4/3460a1d320b2/000000_1");
@@ -141,7 +140,7 @@ public class MetadataMapperTest {
     public void testLongIdentifier() {
         // given
         final Metadata metadata = new Metadata();
-        metadata.setOrgUUID(orgUUID.toString());
+        metadata.setOrgUUID(orgId);
         metadata.setTitle(StringUtils.repeat("c", MetadataMapper.IDENTIFIER_MAX_LEN * 2));
         metadata.setDataSample("one,two," + StringUtils.repeat("a", MetadataMapper.IDENTIFIER_MAX_LEN
             * 2));
@@ -160,13 +159,13 @@ public class MetadataMapperTest {
     static class HiveControllerTestConfig {
 
         @Bean
-        public UUID orgid() {
-            return UUID.fromString("77fca4b7-5e06-4c40-909e-36fcaff90534");
+        public String orgId() {
+            return "defaultorg";
         }
 
         @Bean
         public String dbName() {
-            return "77fca4b7_5e06_4c40_909e_36fcaff90534";
+            return "defaultorg";
         }
 
         @Bean
