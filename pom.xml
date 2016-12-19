@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>dataset-publisher</artifactId>
-    <version>0.6.4</version>
+    <version>0.6.5</version>
 
     <parent>
         <groupId>org.trustedanalytics</groupId>
@@ -248,7 +248,7 @@
               <version>0.4.12</version>
               <configuration>
                 <imageName>${docker.imageName}</imageName>
-                <baseImage>${docker.registry}/tap-base-java:java8-jessie</baseImage>
+                <baseImage>tapimages:8080/tap-base-java:java8-jessie</baseImage>
                 <cmd>["/scripts/run.sh", "/${project.build.finalName}.jar"]</cmd>
                 <resources>
                    <resource>
@@ -280,10 +280,11 @@
         <hive.version>1.1.0-cdh5.7.1</hive.version>
         <jacoco-measurement-instructions>0.416</jacoco-measurement-instructions>
         <jacoco-measurement-branches>0.700</jacoco-measurement-branches>
-        <jacoco-measurement-lines>0.664</jacoco-measurement-lines>
+        <jacoco-measurement-lines>0.662</jacoco-measurement-lines>
         <jacoco-measurement-classes>0.733</jacoco-measurement-classes>
         <docker.imageName>${project.artifactId}</docker.imageName>
-        <docker.registry>tapimages.us.enableiot.com:8080</docker.registry>
     </properties>
+
+
 
 </project>
