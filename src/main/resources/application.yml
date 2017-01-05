@@ -11,7 +11,7 @@ cf:
   uaa: ${sso.uaaUri}
 
 security:
-  ignored: /open,/sdoc.jsp,/*.js,/api-docs,/api-docs/default/*,/images/*,/lib/*,/css/*,/v2/api-docs,/health
+  ignored: /open,/sdoc.jsp,/*.js,/api-docs,/api-docs/default/*,/images/*,/lib/*,/css/*,/v2/api-docs,/health,/info
 
 spring.oauth2:
   resource:
@@ -26,7 +26,26 @@ logging:
 
 endpoints.enabled: false
 endpoints.health.enabled: true
+endpoints.info.enabled: true
+endpoints.info.sensitive: false
 
 krb:
   kdc: testkdc
   realm: testrealm
+
+# http://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-endpoints.html#production-ready-application-info-git
+management:
+  info:
+    git:
+      mode: full
+
+# http://docs.spring.io/spring-boot/docs/current/reference/html/howto-build.html#howto-build-info
+info:
+  name: "@project.artifactId@"
+  app_version: "@project.version@"
+  build:
+    group: "@project.groupId@"
+    artifact: "@project.artifactId@"
+    version: "@project.version@"
+    name: "@project.name@"
+    time: "@build.time@"
